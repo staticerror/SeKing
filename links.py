@@ -2,11 +2,11 @@ from taichi.base.htmlutils import *
 from webscraping.pdict import PersistentDict
 import simplejson, urllib
 
-key = "pings"
+key = "love"
 cache = PersistentDict("urls.db")
 #cache['2'] = html
 
-#helper func
+#helper function to get all the html links from BS results
 def allLinks(parseAllResult):
     links = []
     for lin in parseAllResult:
@@ -45,6 +45,14 @@ def yahooLinks(keyword):
     return links
 
 
+def googleLinks(keyword, country = "us"):
+    html = getHtml("http://www.google.co.in/search?hl=en&q=" + keyword +"&num=100")
+    text = parseAll(html, 'h3', {'class' : 'r'})
+    links = [link for link in allLinks(text) if isProperLink(link)]
+    print links
+
+
+
 
 
     
@@ -60,4 +68,4 @@ def googleBlogLinks(keyword):
 
 
 
-print googleBlogLinks(key)
+print googleLinks(key)

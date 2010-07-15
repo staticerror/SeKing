@@ -6,6 +6,7 @@ import threading
 from taichi.base.htmlutils import stripHtml
 from links import *
 
+
 class LinkMonster(wx.Frame):
     
     def __init__(self, parent , id,  title):
@@ -81,14 +82,14 @@ class LinkMonster(wx.Frame):
         nb = wx.Notebook(panel)
 
         # create the page windows as children of the notebook
-        page1 = generalPage(nb, [ Ezine, Dashboard, ABase])
+        page1 = generalPage(nb, [ Yahoo])
         page1.arrangevbox()
-        page2 = generalPage(nb, [ Wikipedia ])
+        page2 = generalPage(nb, [ Bing ])
         page2.arrangevbox()
-        page3 = generalPage(nb, [ Wikipedia ])
+        page3 = generalPage(nb, [ GoogleBlog  ])
         page3.arrangevbox()
 
-        page4 = googlePage(nb, [Ezine])
+        page4 = googlePage(nb, [Google ])
         # add the pages to the notebook with the label to show on the tab
         nb.AddPage(page4, "Google")
         nb.AddPage(page1, "Yahoo!")
@@ -163,7 +164,7 @@ class generalPage(wx.Panel):
 
         self.SetSizer(self.vbox)
         self.models = models
-        #self.Bind(wx.EVT_BUTTON,  self.OnClicked, id = self.button.GetId())
+        self.Bind(wx.EVT_BUTTON,  self.OnClicked, id = self.startButton.GetId())
 
 
     def arrangevbox(self):
@@ -175,23 +176,35 @@ class generalPage(wx.Panel):
        
 
 
-    def fetchArticleThread(self):
-        self.resultbox.Disable()
+    def fetchLinksThread(self):
+        self.resultsBox.Disable()
+
         for model in self.models:
             n = model()
-            n.fetchArticle(self.keyword)
-            for result in n.article:
-                self.resultbox.AppendText(stripHtml(str(result)))
-        self.resultbox.AppendText("\n\n\n")
+            if (model == Google):
+                base_urlno = self.countryCombo.GetSelection()
+                base_url = self.countryCombo.GetString(base_urlno)
+                base_url = str(base_url)
+            else:
+                base_url = None
+#            self.kwText.AppendText(base_url) #debugging purposes
+            for no in range(1):
+                result = n.getLinks(KEYWORD,  no, base_url)
+                for res in result:
+                    if (res == None):
+                        break
+                    else:
+                        self.resultsBox.AppendText(str(res) + "\n")
+                
+
 
     def OnClicked(self, event):
         
-        self.keyword = str(self.textbox.GetValue())
-#        self.keyword = str(self.keyword.replace(' ', "+"))
+        self.keyword = str(self.kwText.GetValue())
+        self.keyword = str(self.keyword.replace(' ', "+"))
 
-        self.resultbox.Clear()
-        threading.Thread(target = self.fetchArticleThread).start()
-
+        self.resultsBox.Clear()
+        threading.Thread(target = self.fetchLinksThread).start()
 
 
 class googlePage(generalPage):
@@ -206,6 +219,8 @@ class googlePage(generalPage):
         self.countryhbox.Add((-1, 25), 2)
         self.countryhbox.Add(self.countryCombo, 10, wx.EXPAND | wx.ALL, 5)
         self.countryhbox.Add((-1, 25), 6)
+
+        self.countryCombo.SetSelection(0) #useful for accessing items
         self.arrangevbox()
 
 

@@ -68,8 +68,8 @@ class Google():
 
 class GoogleBlog():
     
-    def getLinks(self, keyword):
-        url = 'http://blogsearch.google.com/blogsearch?q=' + keyword
+    def getLinks(self, keyword, no, base_url = None):
+        url = 'http://blogsearch.google.com/blogsearch?q=' + keyword + '&num=100&start='+ str(no)
         html = getHtml(url)
         soup = BeautifulSoup(html)
         links = soup.findAll('a', id=re.compile("^p-"))

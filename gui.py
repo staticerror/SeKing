@@ -188,12 +188,9 @@ class generalPage(wx.Panel):
             else:
                 base_url = None
 #            self.kwText.AppendText(base_url) #debugging purposes
-            for no in range(1):
+            for no in range(1, 100):
                 result = n.getLinks(KEYWORD,  no, base_url)
                 for res in result:
-                    if (res == None):
-                        break
-                    else:
                         self.resultsBox.AppendText(str(res) + "\n")
                 
 

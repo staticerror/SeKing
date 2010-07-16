@@ -200,19 +200,37 @@ class generalPage(wx.Panel):
                         self.noLabel.SetLabel(self.length)
                 
 
+    class thread_looper (threading.Thread):
+        def __init__ (self,interval, function, args=[], kwargs={}):
+            threading.Thread.__init__(self)
+            self.interval = interval
+            self.function = function
+            self.args = args
+            self.kwargs = kwargs
+            self.finished = threading.Event()
+        def stop (self):
+            self.finished.set()
+            self.join()
+        def run (self):
+            while not self.finished.isSet():
+
+                self.function(*self.args, **self.kwargs)
+
+
 
     def OnStart(self, event):
         self.keyword = str(self.kwText.GetValue())
         self.keyword = str(self.keyword.replace(' ', "+"))
 
         self.resultsBox.Clear()
-#        self.t = thread_looper (0.1, self.fetchLinksThread)
+        self.t = self.thread_looper(0.1, self.fetchLinksThread)
+        self.t.start()
+
+#        self.t = threading.Thread(target = self.fetchLinksThread)
 #        self.t.start()
 
-        self.t = threading.Thread(target = self.fetchLinksThread).start()
-
     def OnPause(self, event):
-        self.t.stop()
+        self.t.join()
 
 
     def OnRemDup(self, event):

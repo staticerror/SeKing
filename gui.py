@@ -150,11 +150,14 @@ class generalPage(wx.Panel):
         self.pauseButton = wx.Button(self, -1 , "Pause")
         self.resumeButton = wx.Button(self, -1 , "Resume")
         self.stopButton = wx.Button(self, -1 , "Stop")
-        self.noScrapedLabel = wx.StaticText(self, -1, "Links Scraped")
+        self.noScrapedLabel = wx.StaticText(self, -1, "Links Scraped:")
+        self.noLabel = wx.StaticText(self, -1, " ")
+
 
 
 
         self.remduphbox.Add(self.noScrapedLabel, 0)
+        self.remduphbox.Add(self.noLabel, 0)
         self.remduphbox.Add((-1, -1),1)
         self.remduphbox.Add(self.startButton, 0)
         self.remduphbox.Add(self.pauseButton, 0)
@@ -170,7 +173,9 @@ class generalPage(wx.Panel):
 
         self.SetSizer(self.vbox)
         self.models = models
-        self.Bind(wx.EVT_BUTTON,  self.OnClicked, id = self.startButton.GetId())
+        self.Bind(wx.EVT_BUTTON,  self.OnStart, id = self.startButton.GetId())
+        self.Bind(wx.EVT_BUTTON,  self.OnPause, id = self.pauseButton.GetId())
+        self.Bind(wx.EVT_BUTTON,  self.OnRemDup, id = self.remdupButton.GetId())
 
 
     def arrangevbox(self):
@@ -198,16 +203,40 @@ class generalPage(wx.Panel):
                 result = n.getLinks(KEYWORD,  no, base_url)
                 for res in result:
                         self.resultsBox.AppendText(str(res) + "\n")
+                        self.contents = self.resultsBox.GetValue()
+                        self.total = self.contents.split("\n")
+                        self.length = str(len(self.total))
+                        previousVal = self.noScrapedLabel.GetLabel()
+                        self.noLabel.SetLabel(self.length)
                 
 
 
-    def OnClicked(self, event):
-        
+    def OnStart(self, event):
         self.keyword = str(self.kwText.GetValue())
         self.keyword = str(self.keyword.replace(' ', "+"))
 
         self.resultsBox.Clear()
-        threading.Thread(target = self.fetchLinksThread).start()
+#        self.t = thread_looper (0.1, self.fetchLinksThread)
+#        self.t.start()
+
+        self.t = threading.Thread(target = self.fetchLinksThread).start()
+
+    def OnPause(self, event):
+        self.t.stop()
+
+
+
+
+    def OnRemDup(self, event):
+        
+        self.contents = self.resultsBox.GetValue()
+
+        self.resultsBox.Clear() # order is important, always should be after self.contents!
+        self.listoflinks = self.contents.split("\n")
+        self.unique = uniquer(self.listoflinks)
+        self.length = str(len(self.unique))
+        self.resultsBox.SetValue("".join(self.unique))
+        self.noLabel.SetLabel(self.length)
 
 
 class googlePage(generalPage):

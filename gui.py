@@ -38,9 +38,7 @@ class LinkMonster(wx.Frame):
     def MainArea(self):
         # Master Blaster container, the main guy in the app responsible for every thing
         vbox = wx.BoxSizer(wx.VERTICAL)
-        editortoolbar = self.EditorToolbar() #Editor actions, below menubar
         verticaltoolbar = self.VerticalToolbar() # the three main research, edit etc
-        
         #vbox.Add(editortoolbar, 0, wx.EXPAND) # editor, below menubar
         vbox.Add(verticaltoolbar, 1, wx.EXPAND | wx.RIGHT| wx.TOP | wx.BOTTOM, 20) 
 
@@ -63,15 +61,7 @@ class LinkMonster(wx.Frame):
         return MainContainer
 
 
-    def EditorToolbar(self):
-
-        editortoolbar = wx.ToolBar(self, -1 )
-        editortoolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('/home/desktop/Desktop/crystal_project/24x24/actions/save_all.png'))
-        editortoolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('/home/desktop/Desktop/crystal_project/24x24/actions/fileclose.png'))
-        editortoolbar.Realize()
-        return editortoolbar
-
-
+    
     def StatusBar(self):
         self.statusbar = self.CreateStatusBar()
     
@@ -225,8 +215,6 @@ class generalPage(wx.Panel):
         self.t.stop()
 
 
-
-
     def OnRemDup(self, event):
         
         self.contents = self.resultsBox.GetValue()
@@ -235,8 +223,11 @@ class generalPage(wx.Panel):
         self.listoflinks = self.contents.split("\n")
         self.unique = uniquer(self.listoflinks)
         self.length = str(len(self.unique))
-        self.resultsBox.SetValue("".join(self.unique))
-        self.noLabel.SetLabel(self.length)
+	for lin in self.unique:
+		self.resultsBox.AppendText(str(lin) + "\n")
+	self.listoflinks = self.contents.split("\n")
+	self.length = str(len(self.listoflinks))
+	self.noLabel.SetLabel(self.length)
 
 
 class googlePage(generalPage):

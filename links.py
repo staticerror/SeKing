@@ -1,6 +1,6 @@
 from taichi.base.htmlutils import *
 from webscraping.pdict import PersistentDict
-import simplejson, urllib
+import simplejson, urllib2, urllib
 
 KEYWORD = "die"
 cache = PersistentDict("urls.db")

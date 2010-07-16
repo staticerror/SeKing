@@ -31,7 +31,7 @@ class Yahoo():
 
 
     def getLinks(self, keyword, no= None , base_url = None):
-        info = self.search(keyword)
+        info = self.search(keyword, start = no)
         results = info['Result']
         links = []
         for result in results:

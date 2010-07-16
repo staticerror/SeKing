@@ -150,16 +150,22 @@ class generalPage(wx.Panel):
         self.pauseButton = wx.Button(self, -1 , "Pause")
         self.resumeButton = wx.Button(self, -1 , "Resume")
         self.stopButton = wx.Button(self, -1 , "Stop")
+        self.noScrapedLabel = wx.StaticText(self, -1, "Links Scraped")
 
 
-        self.remduphbox.Add(self.startButton, 2)
-        self.remduphbox.Add(self.pauseButton, 2)
-        self.remduphbox.Add(self.resumeButton, 2)
-        self.remduphbox.Add(self.stopButton, 2)
-        self.remduphbox.Add((15, 5), 5)
-        self.remduphbox.Add(self.remdupButton, 4)
-        self.remduphbox.Add(self.exportButton, 2)
-        self.remduphbox.Add((15, 5), 3)
+
+        self.remduphbox.Add(self.noScrapedLabel, 0)
+        self.remduphbox.Add((-1, -1),1)
+        self.remduphbox.Add(self.startButton, 0)
+        self.remduphbox.Add(self.pauseButton, 0)
+        self.remduphbox.Add(self.resumeButton, 0)
+        self.remduphbox.Add(self.stopButton, 0)
+        self.remduphbox.Add((-1, -1),1)
+        self.remduphbox.Add(self.remdupButton, 2)
+        self.remduphbox.Add(self.exportButton, 1)
+
+        
+#        self.remduphbox.Add((15, 5), 1)
 
 
         self.SetSizer(self.vbox)
